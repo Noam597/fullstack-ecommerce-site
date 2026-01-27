@@ -1,0 +1,28 @@
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+ 
+
+ 
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Fullstack E-commerce API",
+      version: "1.0.0",
+      description: "API documentation for the fullstack e-commerce application"
+    },
+    servers: [
+      {
+        url: "http://localhost:3010",
+        description: "Development server"
+      }
+    ]
+  },
+
+  // 👇 Swagger now reads YAML files instead of controllers
+  apis: ["./docs/**/*.yaml"]
+};
+
+const specs = swaggerJsdoc(options);
+
+export { specs, swaggerUi };

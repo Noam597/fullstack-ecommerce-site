@@ -1,0 +1,77 @@
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: John
+        surname:
+          type: string
+          example: Smith
+        role:
+          type: string
+          example: buyer
+        email:
+          type: string
+          example: john.smith@email.com
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-01-01T12:00:00.000Z"
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      example:
+        email: john.smith@email.com
+        password: Password123!
+      properties:
+        email:
+          type: string
+          description: User email address
+        password:
+          type: string
+          description: User password
+
+    RegisterRequest:
+      type: object
+      required: [name, surname, email, password, verifyPassword]
+      properties:
+        name:
+          type: string
+        surname:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        verifyPassword:
+          type: string
+
+    TokenResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Operation successful
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

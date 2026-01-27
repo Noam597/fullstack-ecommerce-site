@@ -1,0 +1,69 @@
+
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: pg
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=yourpassword
+      - POSTGRES_DB=mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d mydb"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  server:
+    build:
+      context: ./server
+    environment:
+      - NODE_ENV=production
+      - PGHOST=postgres
+      - PGUSER=postgres
+      - PGPASSWORD=yourpassword
+      - PGDATABASE=mydb
+      - PGPORT=5432
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "3010:3010"
+
+  client:
+    build:
+      context: ./client/store
+    environment:
+     # - VITE_API_URL=http://localhost:3010
+      VITE_DOCKER: "true"
+    depends_on:
+      - server
+    ports:
+      - "5173:5173"
+
+volumes:
+  pgdata:
+  redisdata:
