@@ -1,0 +1,39 @@
+# Node artifacts
+node_modules
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Build output (rebuilt inside Docker)
+dist
+
+# TypeScript caches
+*.tsbuildinfo
+
+# Tests & coverage
+coverage
+__tests__
+*.test.ts
+*.spec.ts
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Git & tooling
+.git
+.gitignore
+.vscode
+.idea
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Docker files not needed in image
+Dockerfile
+docker-compose.yml
+
+# Docs / misc
+README.md

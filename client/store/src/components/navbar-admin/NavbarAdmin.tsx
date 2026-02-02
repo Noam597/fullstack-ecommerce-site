@@ -2,7 +2,7 @@ import React from 'react'
 import { Link , useNavigate} from 'react-router-dom'
 import Button  from '../button/Button'
 import { useUser } from '../../contexts/UserContexts'
-import axios from 'axios'
+import { api } from '../../axios'
 const NavbarAdmin:React.FC = () => {
 
     const { setUser } = useUser()
@@ -10,7 +10,7 @@ const NavbarAdmin:React.FC = () => {
     
   
     const logOut = async () =>{
-      await axios.post('/users/logout',{},{
+      await api.post('/users/logout',{},{
         withCredentials: true
       })
         console.log("logout button works");

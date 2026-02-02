@@ -1,0 +1,38 @@
+# Dependencies
+node_modules
+
+# Build output (built inside Docker)
+dist
+
+# Env files (never push secrets)
+.env
+.env.*
+!.env.example
+
+# Vite cache
+.vite
+
+# Test / coverage
+coverage
+__tests__
+*.test.*
+*.spec.*
+
+# Lint / format
+.eslintcache
+
+# Editor / OS noise
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Docker files not needed in image
+docker-compose.yml
+
+# Docs
+README.md
