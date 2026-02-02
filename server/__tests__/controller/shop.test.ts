@@ -6,7 +6,7 @@ import { getAllItems,
          getFullCart,
          addQuantity, 
          removeCartItem,
-         clearCart} from "../../controller/shop"
+         clearCart} from "../../controller/shop.js"
 
 
 // Mock dependencies
@@ -15,7 +15,7 @@ jest.mock('../../db', () => ({
   default: { query: jest.fn() }, // <-- mock the default export
 }));
 
-import pool from '../../db';
+import pool from '../../db.js';
 const mockedPoolQuery = pool.query as unknown as jest.MockedFunction<
   (query: string, values?: any[]) => Promise<{ rows: any[] }>
 >;

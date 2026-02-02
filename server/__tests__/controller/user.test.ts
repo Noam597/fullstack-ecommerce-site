@@ -16,9 +16,9 @@ jest.mock('../../redis', () => ({
     del: jest.fn(),
   },
 }));
-import { loginController, logoutController, registerController } from '../../controller/user.ts';
-import  pool  from '../../db';
-import * as redisModule from '../../redis';
+import { loginController, logoutController, registerController } from '../../controller/user.js';
+import  pool  from '../../db.js';
+import * as redisModule from '../../redis.js';
 
 const mockedConnectRedisOnce = redisModule.connectRedisOnce as jest.MockedFunction<typeof redisModule.connectRedisOnce>;
 

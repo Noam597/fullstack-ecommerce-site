@@ -1,9 +1,9 @@
 import type {Request, Response} from 'express';
 import bcrypt from 'bcrypt'
-import { createToken } from '../middleware/jwtAuth.ts';
-import pool from '../db.ts';
+import { createToken } from '../middleware/jwtAuth.js';
+import pool from '../db.js';
 import jwt  from 'jsonwebtoken';
-import {redisClient, connectRedisOnce} from '../redis.ts'
+import {redisClient, connectRedisOnce} from '../redis.js'
 /**
  * @swagger
  * tags:

@@ -27,10 +27,10 @@ jest.mock('../../controller/shop', () => ({
   }));
   
   
-import * as shopController from '../../controller/shop';
+import * as shopController from '../../controller/shop.js';
 import request from 'supertest';
 import express from 'express';
-import { shopRouter } from '../../routes/shop';
+import { shopRouter } from '../../routes/shop.js';
 
 const app = express();
 app.use(express.json());

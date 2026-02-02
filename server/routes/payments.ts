@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { createOrder, downloadReceipt, getAllReceipt, getFrontReceipt, getOrderItems, getOrders, getReceipt, getSingleUserReceipt } from '../controller/payments.ts';
-import { authToken } from '../middleware/jwtAuth.ts';
+import { createOrder, downloadReceipt, getAllReceipt, getFrontReceipt, getOrderItems, getOrders, getReceipt, getSingleUserReceipt } from '../controller/payments.js';
+import { authToken } from '../middleware/jwtAuth.js';
 
 
 const paymentRouter = Router()

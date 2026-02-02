@@ -1,8 +1,8 @@
 import request from 'supertest';
 import express from 'express';
-import { signUpRouter } from '../../routes/user';
+import { signUpRouter } from '../../routes/user.js';
 import { describe, it, expect, beforeEach, jest} from '@jest/globals'
-import { loginController, logoutController, registerController } from '../../controller/user';
+import { loginController, logoutController, registerController } from '../../controller/user.js';
 const app = express();
 
 jest.mock('../../controller/user');

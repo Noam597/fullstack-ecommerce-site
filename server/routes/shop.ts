@@ -7,8 +7,8 @@ import { addToCart, getAllItems,
     getCartById,
     decrementOrRemoveCartItem,
     removeCartItem,
-    clearCart} from "../controller/shop.ts"
-import { authToken } from '../middleware/jwtAuth.ts';
+    clearCart} from "../controller/shop.js";
+import { authToken } from '../middleware/jwtAuth.js';
 const shopRouter = Router();
 
 

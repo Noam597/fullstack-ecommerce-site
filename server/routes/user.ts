@@ -10,8 +10,8 @@ import {signupController,
             logoutController,
             loggedInUserController,
             
-        } from '../controller/user.ts';
-import { authToken } from '../middleware/jwtAuth.ts';
+        } from '../controller/user.js';
+import { authToken } from '../middleware/jwtAuth.js';
  
 const signUpRouter = Router();
 

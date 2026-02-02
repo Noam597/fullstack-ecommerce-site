@@ -30,10 +30,10 @@ const mockHandler =
   }));
   
 
-import * as adminController from '../../controller/admin';
+import * as adminController from '../../controller/admin.js';
 import request from 'supertest';
 import express from 'express';
-import { adminRouter } from '../../routes/admin';
+import { adminRouter } from '../../routes/admin.js';
 
 
 const app = express();

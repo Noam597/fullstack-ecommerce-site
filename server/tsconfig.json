@@ -1,8 +1,61 @@
+// {
+//   "compilerOptions": {
+//     "target": "ES2020",
+//     "module": "ESNext",
+//     "moduleResolution": "node",
+//     "strict": true,
+//     "esModuleInterop": true,
+//     "allowSyntheticDefaultImports": true,
+//     "forceConsistentCasingInFileNames": true,
+//     "skipLibCheck": true,
+//     "outDir": "./dist",
+//     "rootDir": "./",
+//     "declaration": true,
+//     "declarationMap": true,
+//     "sourceMap": true,
+//     "removeComments": true,
+//     "noImplicitAny": true,
+//     "noImplicitReturns": true,
+//     "noImplicitThis": true,
+//     "noUnusedLocals": true,
+//     "noUnusedParameters": true,
+//     "allowImportingTsExtensions": true,
+//     "noEmit": true
+//   },
+//   "include": ["./*", "docs/swagger.ts"],
+//   "exclude": ["node_modules", "dist"]
+// }
+
+// {
+//   "compilerOptions": {
+//     "target": "ES2020",
+//     "module": "ESNext",
+//     "moduleResolution": "node",
+//     "strict": true,
+//     "esModuleInterop": true,
+//     "allowSyntheticDefaultImports": true,
+//     "forceConsistentCasingInFileNames": true,
+//     "skipLibCheck": true,
+//     "outDir": "./dist",
+//     "rootDir": "./",
+//     "declaration": true,
+//     "declarationMap": true,
+//     "sourceMap": true,
+//     "removeComments": true,
+//     "noImplicitAny": true,
+//     "noImplicitReturns": true,
+//     "noImplicitThis": true,
+//     "noUnusedLocals": true,
+//     "noUnusedParameters": true
+//   },
+//   "include": ["./*", "docs/swagger.ts"],
+//   "exclude": ["node_modules", "dist"]
+// }
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "strict": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -18,10 +71,9 @@
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "allowImportingTsExtensions": true,
-    "noEmit": true
+    "noUnusedParameters": true
   },
-  "include": ["./*", "docs/swagger.ts"],
+  "include": ["**/*", "server/docs/swagger.ts"],
+
   "exclude": ["node_modules", "dist"]
 }

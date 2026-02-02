@@ -1,6 +1,6 @@
 // initDb.ts
-import pool from './db.ts';
-import { seedProducts } from './utils.ts';
+import pool from './db.js';
+import { seedProducts } from './utils.js';
 export const initDb = async () => {
   try {
     // Create table if not exists

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 import { Request, Response, NextFunction } from 'express';
-import { requireAdmin } from '../../middleware/adminAuth';
+import { requireAdmin } from '../../middleware/adminAuth.js';
 
 const mockResponse = (): Response => {
   return {

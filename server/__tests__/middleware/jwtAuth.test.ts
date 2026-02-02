@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { jest, describe, it, expect, beforeEach} from '@jest/globals';
 import jwt from 'jsonwebtoken';
-import { createToken , authToken} from '../../middleware/jwtAuth.ts';
+import { createToken , authToken} from '../../middleware/jwtAuth.js';
 
 // Mock jsonwebtoken
 jest.mock('jsonwebtoken');

@@ -18,7 +18,7 @@ jest.mock('bcrypt', () => ({
   }));
 
 import bcrypt from 'bcrypt';  
-import pool from '../../db';
+import pool from '../../db.js';
 
 const mockResponse = (): Response =>
     ({
@@ -65,7 +65,7 @@ import { adminAddNewUser,
          updateProductQuantity,
          addNewItem,
          getDailyOrderTotals
- } from "../../controller/admin";
+ } from "../../controller/admin.js";
 
 describe('adminAddNewUser (unit)', () => {
 

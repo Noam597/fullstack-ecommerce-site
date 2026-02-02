@@ -1,7 +1,7 @@
 import type {Request, Response} from 'express';
 import bcrypt from 'bcrypt'
-import pool from '../db.ts';
-import { passwordCheck, emailCheck } from '../utils/validators.ts'
+import pool from '../db.js';
+import { passwordCheck, emailCheck } from '../utils/validators.js'
 
 export type UserRole = "admin" | "manager" | "buyer";
 

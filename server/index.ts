@@ -2,13 +2,13 @@ import express from 'express'
 import type { Request, Response} from 'express' 
 import cors from 'cors';
 import cookieParser from "cookie-parser";
-import {signUpRouter} from './routes/user.ts';
-import { shopRouter } from './routes/shop.ts';
-import { adminRouter } from './routes/admin.ts';
-import { paymentRouter } from "./routes/payments.ts"
-import { specs, swaggerUi } from './docs/swagger.ts';
-import { initDb } from './initDb.ts';
-import { connectRedisOnce, redisClient} from './redis.ts';
+import {signUpRouter} from './routes/user.js';
+import { shopRouter } from './routes/shop.js';
+import { adminRouter } from './routes/admin.js';
+import { paymentRouter } from "./routes/payments.js"
+import { specs, swaggerUi } from './docs/swagger.js';
+import { initDb } from './initDb.js';
+import { connectRedisOnce, redisClient} from './redis.js';
 const port = 3010;
 const app = express();
 
@@ -16,42 +16,48 @@ app.use(express.json());
 app.use(cookieParser())
  
 const allowedOrigins = ["http://localhost:5173",'http://127.0.0.1:5173'];
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
-  })
-);
-
-// app.use(cors({
-//   origin: allowedOrigins, 
-//   credentials: true}));
- 
-// app.use(cors({
-//   origin: true, 
-//   credentials: true}));
-  
-
-// app.use(
-//   cors({
-//     origin: (origin, callback) => {
-//       if (!origin || allowedOrigins.includes(origin)) {
-//         callback(null, true);
-//       } else {
-//         callback(new Error("Not allowed by CORS"));
-//       }
-//     },
-//     credentials: true, // important for cookies
-//   })
-// );
 
 
-app.options(/.*/, cors({
-  origin: allowedOrigins,
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // allow mobile apps or curl
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error("Not allowed by CORS"));
+  },
   credentials: true,
 }));
-// ✅ Handle preflight requests
-// app.options("*", cors({ credentials: true, origin: allowedOrigins }));
+app.use((req: Request, res: Response, next) => {
+  const origin = req.headers.origin;
+  console.log(`Incoming request: ${req.method} ${req.path}, Origin: ${origin}`);
+
+  res.on('finish', () => {
+    console.log('Response headers:');
+    console.log({
+      'Access-Control-Allow-Origin': res.getHeader('Access-Control-Allow-Origin'),
+      'Access-Control-Allow-Credentials': res.getHeader('Access-Control-Allow-Credentials'),
+    });
+  });
+
+  next();
+});
+app.use((req, res, next) => {
+  console.log('--- Incoming Request ---');
+  console.log('Method:', req.method);
+  console.log('Path:', req.path);
+  console.log('Origin header:', req.headers.origin);
+
+  // Hook to log headers the server sends
+  const originalSetHeader = res.setHeader.bind(res);
+  res.setHeader = (name, value) => {
+    console.log('Setting header:', name, value);
+    return originalSetHeader(name, value);
+  };
+
+  next();
+});
+
 
 
 
@@ -64,24 +70,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
   },
 }));
 
-// app.use((req: Request, res: Response, next: NextFunction) => {
-//   res.header("Access-Control-Allow-Origins", "*");
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin,X-Requested-with,Content-Type,Accept,Authorization"
-//   );
-//   if (req.method === "OPTIONS") {
-//     res.header("Access-Control-Allow-Methods", "POST,PATCH,PUT,DELETE,GET");
-//     return res.status(200).json({});
-//   }
-//   return next();
-// });
-// app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
-//   if (err instanceof SyntaxError && 'body' in err) {
-//     return res.status(400).json({ success: false, message: 'Invalid JSON payload' });
-//   }
-//   next(err);
-// });
 app.use('/admin', adminRouter)
 app.use('/users', signUpRouter)
 app.use('/store', shopRouter)

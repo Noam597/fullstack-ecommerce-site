@@ -7,7 +7,7 @@ import { createOrder,
          getReceipt,
          getFrontReceipt,
          getSingleUserReceipt,
-         downloadReceipt } from "../../controller/payments";
+         downloadReceipt } from "../../controller/payments.js";
 
 
 jest.mock('../../db', () => {
@@ -22,8 +22,8 @@ jest.mock('../../db', () => {
 jest.mock('../../utils/generateReciept', () => ({
   generateReceiptPDF: jest.fn(),
 }));
-import pool from '../../db';
-import { generateReceiptPDF } from '../../utils/generateReciept';
+import pool from '../../db.js';
+import { generateReceiptPDF } from '../../utils/generateReciept.js';
   // --- helpers ---
   const mockResponse = (): Response =>
     ({

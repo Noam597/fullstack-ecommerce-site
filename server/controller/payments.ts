@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
-import pool from "../db.ts"; 
+import pool from "../db.js"; 
 import crypto from "crypto";
-import { generateReceiptPDF } from "../utils/generateReciept.ts";
+import { generateReceiptPDF } from "../utils/generateReciept.js";
 
 const generateOrderCode = () => {
   const date = new Date().toISOString().slice(0, 10).replace(/-/g, "");

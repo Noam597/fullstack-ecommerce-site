@@ -25,10 +25,10 @@ const mockHandler =
   }));
   
 
-import * as paymentController from '../../controller/payments';
+import * as paymentController from '../../controller/payments.js';
 import request from 'supertest';
 import express from 'express';
-import { paymentRouter } from '../../routes/payments';
+import { paymentRouter } from '../../routes/payments.js';
 
 
 const app = express();

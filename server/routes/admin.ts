@@ -5,9 +5,9 @@ import { addNewItem, adminAddNewUser,
          getDailyOrderTotals, 
          toggleBanUserController, 
          updateProductPrice, 
-         updateProductQuantity } from '../controller/admin.ts';
-import { authToken } from '../middleware/jwtAuth.ts';
-import { requireAdmin } from '../middleware/adminAuth.ts'
+         updateProductQuantity } from '../controller/admin.js';
+import { authToken } from '../middleware/jwtAuth.js';
+import { requireAdmin } from '../middleware/adminAuth.js'
 
 
 const adminRouter = Router()
