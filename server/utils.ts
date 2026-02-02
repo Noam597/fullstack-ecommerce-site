@@ -33,7 +33,7 @@ export const defaultProducts = [
     description: "Noise-cancelling over-ear headphones with 30-hour battery life.",
     price: 89.99,
     quantity: 50,
-    img: "https://example.com/products/headphones.jpg",
+    img: "https://images.unsplash.com/photo-1765279327575-bc9e453514dd?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     category: "Audio"
   },
   {
@@ -41,7 +41,7 @@ export const defaultProducts = [
     description: "RGB backlit mechanical keyboard with blue switches.",
     price: 59.99,
     quantity: 0,
-    img: "https://example.com/products/keyboard.jpg",
+    img: "https://images.unsplash.com/photo-1656711081969-9d16ebc2d210?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     
     category: "Computers"
   },
@@ -50,7 +50,7 @@ export const defaultProducts = [
     description: "Crystal clear 4K IPS display with 75Hz refresh rate.",
     price: 279.99,
     quantity: 20,
-    img: "https://example.com/products/monitor.jpg",
+    img: "https://plus.unsplash.com/premium_photo-1669380425564-6e1a281a4d30?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     category: "Displays"
   },
   {
@@ -58,7 +58,7 @@ export const defaultProducts = [
     description: "Lightweight ergonomic mouse with 6 programmable buttons.",
     price: 39.99,
     quantity: 60,
-    img: "https://example.com/products/mouse.jpg",
+    img: "https://images.unsplash.com/photo-1660491083562-d91a64d6ea9c?q=80&w=881&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     category: "Computers"
   },
   {
@@ -66,7 +66,7 @@ export const defaultProducts = [
     description: "Waterproof outdoor speaker with powerful bass.",
     price: 49.99,
     quantity: 45,
-    img: "https://example.com/products/speaker.jpg",
+    img: "https://images.unsplash.com/photo-1589256469067-ea99122bbdc4?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     category: "Audio"
   },
   {
@@ -74,7 +74,7 @@ export const defaultProducts = [
     description: "Fitness tracking with heart rate monitor, GPS, and Bluetooth.",
     price: 119.99,
     quantity: 0,
-    img: "https://example.com/products/smartwatch.jpg",
+    img: "https://images.unsplash.com/photo-1617043786394-f977fa12eddf?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     
     category: "Wearables"
   },
@@ -83,7 +83,7 @@ export const defaultProducts = [
     description: "Fast-charging adapter compatible with phones and tablets.",
     price: 24.99,
     quantity: 80,
-    img: "https://example.com/products/charger.jpg",
+    img: "https://plus.unsplash.com/premium_photo-1764113096548-11270b5febed?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     category: "Accessories"
   },
   {
@@ -91,7 +91,7 @@ export const defaultProducts = [
     description: "Compact wireless earbuds with charging case.",
     price: 69.99,
     quantity: 55,
-    img: "https://example.com/products/earbuds.jpg",
+    img: "https://images.unsplash.com/photo-1733641839301-58d84137548c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     category: "Audio"
   },
   {
@@ -99,7 +99,7 @@ export const defaultProducts = [
     description: "High-quality webcam suitable for streaming and video calls.",
     price: 34.99,
     quantity: 35,
-    img: "https://example.com/products/webcam.jpg",
+    img: "https://images.unsplash.com/photo-1636569826709-8e07f6104992?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     category: "Computers"
   },
   {
@@ -108,7 +108,7 @@ export const defaultProducts = [
     description: "Portable USB-C solid state drive with fast transfer speeds.",
     price: 129.99,
     quantity: 25,
-    img: "https://example.com/products/ssd.jpg",
+    img: "https://images.unsplash.com/photo-1577538926210-fc6cc624fde2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     category: "Storage"
   }
 ];
