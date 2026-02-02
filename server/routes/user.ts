@@ -9,6 +9,7 @@ import {signupController,
             testRedis,
             logoutController,
             loggedInUserController,
+            // seedUsersController,
             
         } from '../controller/user.js';
 import { authToken } from '../middleware/jwtAuth.js';
