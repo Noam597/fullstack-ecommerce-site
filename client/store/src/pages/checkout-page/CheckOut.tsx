@@ -56,6 +56,7 @@ const CheckOut: React.FC = () => {
                 ))}
                 <tr>
                   <td
+                  data-testid="cart-total"
                     colSpan={5}
                     className="text-center font-bold px-2 py-2 border border-blue-500"
                   >

@@ -15,7 +15,7 @@ const Shop: React.FC = () => {
   const productsStatus = useSelector((state: RootState) => state.products.status);
   const cart = useSelector((state: RootState) => state.cart.items);
   const cart_id = useSelector((state: RootState) => state.cart.cart_id);
-  const loading = useSelector((state: RootState) => state.cart.loading);
+  // const loading = useSelector((state: RootState) => state.cart.loading);
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {

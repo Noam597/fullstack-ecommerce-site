@@ -135,7 +135,7 @@ const PaymentPage: React.FC = () => {
             </div>
 
             <div className="relative w-24">
-              <label className="block text-sm mb-1 text-gray-300 flex items-center gap-1">
+              <label className="flex text-sm mb-1 text-gray-300  items-center gap-1">
                 CVC
                 <span
                   className="relative cursor-pointer text-gray-400 hover:text-white"

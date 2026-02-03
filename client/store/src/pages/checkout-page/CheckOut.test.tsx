@@ -82,7 +82,7 @@ describe('CheckOut Component', () => {
 
     expect(screen.getByText('Product A')).toBeInTheDocument();
     expect(screen.getByText('Product B')).toBeInTheDocument();
-    expect(screen.getByText('TOTAL: 35.00 $')).toBeInTheDocument();
+    expect(screen.getByTestId('cart-total')).toHaveTextContent('TOTAL: 35.00$');
     expect(screen.getByText(/Payment/i)).toBeEnabled();
   });
 

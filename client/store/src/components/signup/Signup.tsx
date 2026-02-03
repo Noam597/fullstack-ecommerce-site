@@ -55,7 +55,7 @@ function Signup({ onSignUp }: signUpProps) {
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="example@mail.com"
+        placeholder="enter valid email example@mail.com"
         className="w-full"
       />
       <Inputs
