@@ -1,4 +1,3 @@
-
 const LandingPage = () => {
   return (
     <div className="relative h-screen w-full">
@@ -13,8 +12,8 @@ const LandingPage = () => {
       <div className="absolute inset-0 bg-black opacity-50"></div>
 
       {/* Centered title */}
-      <div className="relative z-10 flex items-center justify-center h-full">
-        <h1 className="text-white text-5xl md:text-6xl font-bold opacity-0 animate-fade-drop">
+      <div className="relative z-10 flex items-center justify-center h-full px-4 text-center">
+        <h1 className="text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold opacity-0 animate-fade-drop leading-tight">
           Welcome to My Fullstack E-commerce Project
         </h1>
       </div>

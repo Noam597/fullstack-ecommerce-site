@@ -55,40 +55,30 @@ const AddNewAccount:React.FC = () => {
 
   return (
     <div className='m-5'>
-        <form onSubmit={handleSubmit} className='w-[352px] h-[404px]'>
-            <Inputs label='Name' 
-                    name='name' 
-                    value={name} 
-                    onChange={(e)=>setName(e.target.value)}
-                    placeholder='Enter name'
-                    />
-            <Inputs label='Surname' 
-                    name='surname' 
-                    value={surname} 
-                    onChange={(e)=>setSurname(e.target.value)}
-                    placeholder='Enter Surname'
-                    />
-            {/*role select*/}
-            <select className='bg-black text-white' value={role} onChange={(e)=>setRole(e.target.value)}>
-                <option value="" disabled>Select a role</option>
-                <option value="buyer">Buyer</option>
-                <option value="admin">Admin</option>
-            </select>
-            <Inputs label='Email' 
-                    name='email' 
-                    value={email} 
-                    onChange={(e)=>setEmail(e.target.value)}
-                    placeholder='example@mail.com'
-                    />
-            <Inputs label='password' 
-                    name='password' 
-                    value={password} 
-                    onChange={(e)=>setPassword(e.target.value)}
-                    placeholder=''
-                    />
-            <Button type='submit'>Submit</Button>
-            {error && <p>{error}</p>}
-        </form>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
+  <Inputs label="Name" name="name" value={name} onChange={e => setName(e.target.value)} placeholder="Enter name" />
+  <Inputs label="Surname" name="surname" value={surname} onChange={e => setSurname(e.target.value)} placeholder="Enter surname" />
+
+  <select
+    className="bg-gray-500 text-gray-100 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+    value={role}
+    onChange={e => setRole(e.target.value)}
+  >
+    <option value="" disabled>Select a role</option>
+    <option value="buyer">Buyer</option>
+    <option value="admin">Admin</option>
+  </select>
+
+  <Inputs label="Email" name="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="example@mail.com" />
+  <Inputs label="Password" name="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter password" />
+
+  {error && <p className="text-red-500 text-sm">{error}</p>}
+
+  <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">
+    Submit
+  </Button>
+</form>
+
     </div>
   )
 }

@@ -1,61 +1,101 @@
 import NavbarAdmin from './NavbarAdmin';
-import '@testing-library/react';
-import { screen, render, waitFor } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
-import { describe, it, expect, vi } from "vitest";
-import axios from 'axios';
+import '@testing-library/jest-dom';
+import { screen, render, waitFor, fireEvent, within } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { api } from '../../axios'; // <-- import your api here
 
+// Mock api.post
+vi.mock('../../axios', () => ({
+  api: {
+    post: vi.fn(() => Promise.resolve({})),
+  },
+}));
 
-vi.mock('axios')
 const mockNavigate = vi.fn();
-const mockSetUser = vi.fn()
+const mockSetUser = vi.fn();
 
-vi.mock("react-router-dom", async ()=>{
-    const actual = await vi.importActual("react-router-dom");
-    return {
-        ...actual,
-        useNavigate:() => mockNavigate,
-    }
-})
-
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
 
 vi.mock('../../contexts/UserContexts', () => ({
-    useUser: () => ({
-      setUser: mockSetUser,
-    }),
-  }))
-describe(" Logged Into Admin Navbar",()=>{
-    it("navbar list", ()=>{
-        render(<MemoryRouter>
-                    <NavbarAdmin/>
-               </MemoryRouter>)
+  useUser: () => ({
+    setUser: mockSetUser,
+  }),
+}));
 
-            expect(screen.getByRole("link", {name:/dashboard/i})).toHaveAttribute("href", "/dashboard");
-            expect(screen.getByRole("link", {name:/stock/i})).toHaveAttribute("href", "/stock");
-            expect(screen.getByRole("link", {name:/accounts/i})).toHaveAttribute("href", "/accounts");
-            expect(screen.getByRole("link", {name:/add New/i})).toHaveAttribute("href", "/addNew");
-    })      
+describe('Logged Into Admin Navbar', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
-    it("logout button triggers token reset and navigation", async () => {
-        render(
-          <MemoryRouter>
-            <NavbarAdmin />
-          </MemoryRouter>
-        );
-    
-        const logoutBtn = screen.getByRole("button", { name: /logout/i });
-        logoutBtn.click();
-        
-        
+  it('shows admin links in mobile menu after opening hamburger', async () => {
+    render(
+      <MemoryRouter>
+        <NavbarAdmin />
+      </MemoryRouter>
+    );
+
+    const hamburgerBtn = screen.getByRole('button', { name: /toggle menu/i });
+    fireEvent.click(hamburgerBtn);
+
+    const mobileMenu = screen.getByTestId('mobile-menu');
+    expect(within(mobileMenu).getByRole('link', { name: /dashboard/i })).toHaveAttribute('href', '/dashboard');
+    expect(within(mobileMenu).getByRole('link', { name: /stock/i })).toHaveAttribute('href', '/stock');
+    expect(within(mobileMenu).getByRole('link', { name: /accounts/i })).toHaveAttribute('href', '/accounts');
+    expect(within(mobileMenu).getByRole('link', { name: /add new/i })).toHaveAttribute('href', '/addNew');
+  });
+
+  it('logout button triggers user reset and navigation (desktop)', async () => {
+    render(
+      <MemoryRouter>
+        <NavbarAdmin />
+      </MemoryRouter>
+    );
+
+    const desktopMenu = screen.getByTestId('desktop-menu');
+    const logoutBtn = within(desktopMenu).getByRole('button', { name: /logout/i });
+
+    fireEvent.click(logoutBtn);
+
     await waitFor(() => {
-         expect(axios.post).toHaveBeenCalledWith(
-      "/users/logout",
-      {},
-      { withCredentials: true }
-    )
+      expect(api.post).toHaveBeenCalledWith(
+        '/users/logout',
+        {},
+        { withCredentials: true }
+      );
+      expect(mockSetUser).toHaveBeenCalledWith(null);
+      expect(mockNavigate).toHaveBeenCalledWith('/login');
+    });
+  });
 
-        expect(mockSetUser).toHaveBeenCalledWith(null);
-        expect(mockNavigate).toHaveBeenCalledWith("/login");
-      });
-})
-})
+  it('logout button triggers user reset and navigation (mobile)', async () => {
+    render(
+      <MemoryRouter>
+        <NavbarAdmin />
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /toggle menu/i }));
+
+    const mobileMenu = screen.getByTestId('mobile-menu');
+    const logoutBtn = within(mobileMenu).getByRole('button', { name: /logout/i });
+
+    fireEvent.click(logoutBtn);
+
+    await waitFor(() => {
+      expect(api.post).toHaveBeenCalledWith(
+        '/users/logout',
+        {},
+        { withCredentials: true }
+      );
+      expect(mockSetUser).toHaveBeenCalledWith(null);
+      expect(mockNavigate).toHaveBeenCalledWith('/login');
+    });
+  });
+});

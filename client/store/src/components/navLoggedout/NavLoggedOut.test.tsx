@@ -1,33 +1,27 @@
 import NavLoggedOut from './NavLoggedOut';
-import '@testing-library/react';
-import { screen, render } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
-import { describe, it, expect, vi } from "vitest";
+import '@testing-library/jest-dom';
+import { screen, render, fireEvent, within } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import { describe, it, expect } from 'vitest';
 
+describe('Logged Out Navbar', () => {
+  it('shows all links after opening mobile menu', () => {
+    render(
+      <MemoryRouter>
+        <NavLoggedOut />
+      </MemoryRouter>
+    );
 
- const mockNavigate = vi.fn();
+    // Open the hamburger menu
+    const toggleBtn = screen.getByRole('button', { name: /toggle menu/i });
+    fireEvent.click(toggleBtn);
 
+    // Scope queries to the mobile menu using data-testid or role
+    const mobileMenu = screen.getByRole('menu'); // or getByTestId('mobile-menu') if you have it
 
-vi.mock("react-router-dom", async ()=>{
-    const actual = await vi.importActual("react-router-dom");
-    return {
-        ...actual,
-        useNavigate:() => mockNavigate,
-    }
-})
-
-describe("testing all links",()=>{
-    it("testing each link in the list",()=>{
-        render(<MemoryRouter>
-                <NavLoggedOut/>
-            </MemoryRouter>)
-
-
-expect(screen.getByRole("link", {name:/home/i})).toHaveAttribute("href", "/login");
-expect(screen.getByRole("link", {name:/about/i})).toHaveAttribute("href", "/about");
-expect(screen.getByRole("link", {name:/products/i})).toHaveAttribute("href", "/products");
-expect(screen.getByRole("link", {name:/sign up/i})).toHaveAttribute("href", "/signup");
-
-            
-    })
-})
+    expect(within(mobileMenu).getByRole('link', { name: /home/i })).toHaveAttribute('href', '/login');
+    expect(within(mobileMenu).getByRole('link', { name: /about/i })).toHaveAttribute('href', '/about');
+    expect(within(mobileMenu).getByRole('link', { name: /products/i })).toHaveAttribute('href', '/products');
+    expect(within(mobileMenu).getByRole('link', { name: /sign up/i })).toHaveAttribute('href', '/signup');
+  });
+});

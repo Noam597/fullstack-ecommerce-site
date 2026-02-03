@@ -6,13 +6,13 @@ import Footer from "./components/footer/Footer";
 
 const Layout: React.FC = () => {
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <Navbar/>
-      <main className="pt-16">{/* add padding to avoid overlap with fixed navbar */}
+      <main className="pt-16 flex-grow">{/* add padding to avoid overlap with fixed navbar */}
         <Outlet />
       </main>
       <Footer/>
-    </>
+    </div>
   );
 };
 
