@@ -1,11 +1,12 @@
 import type {Request, Response} from 'express';
+
 import bcrypt from 'bcrypt'
-import { createToken } from '../middleware/jwtAuth.js';
+import { createToken , createRefreshToken, refreshTokenSecret } from '../middleware/jwtAuth.js';
 import pool from '../db.js';
 import jwt  from 'jsonwebtoken';
 import {redisClient, connectRedisOnce} from '../redis.js'
 
- 
+
 const users = [
   { name: "Admin", surname: "Adminson", role: "admin", password: "AdmiN123!", email: "admin@email.com" },
   {  name: "Sarah", surname: "Johnson", role: "buyer", password: "SaraH123!", email: "sarah.johnson@email.com" },
@@ -48,21 +49,31 @@ export const loginController = async (req:Request, res:Response) => {
   const cached = await redisClient.get(`user:${email}`);
   if (cached) {
     const { user } = JSON.parse(cached);
-    const token = createToken(user)
-    res.cookie("token", token, {
+  
+    const accessToken = createToken(user);
+    const { refreshToken, tokenId } = createRefreshToken(user);
+  
+    await redisClient.set(
+      `refresh:${user.id}:${tokenId}`,
+      "valid",
+      { EX: 60 * 60 * 24 * 7 }
+    );
+  
+    res.cookie("A_Token", accessToken, {
       httpOnly: false,
       secure: false,
       sameSite: "lax"
     });
-
-
-
-
+    res.cookie("R_Token", refreshToken, {
+      httpOnly: false,
+      secure: false,
+      sameSite: "lax"
+    });
+  
     return res.status(200).json({
       success: true,
       message: "Login successful (from cache)",
       user,
-      token,
     });
   }
   // const loginQuery = `SELECT * FROM customers WHERE email =$1;`
@@ -93,23 +104,35 @@ export const loginController = async (req:Request, res:Response) => {
       return res.status(400).json({success: false, message: "Invalid email/password"})
     }
     const {password:_pw, ...safeUser} = user;
-    const token = createToken(user);
+    const token = createToken(safeUser);
+    const {refreshToken, tokenId} = createRefreshToken(safeUser) 
+
+
+    await redisClient.set(
+      `refresh:${safeUser.id}:${tokenId}`,
+      "valid",
+      { EX: 60 * 60 * 24 * 7 }
+    );
+
     await redisClient.set(
       `user:${email}`,
       JSON.stringify({ user: safeUser })
     );
 
-    res.cookie("token", token, {
+    res.cookie("A_Token", token, {
+      httpOnly: false,
+      secure: false,
+      sameSite: "lax"
+    });
+    res.cookie("R_Token", refreshToken, {
       httpOnly: false,
       secure: false,
       sameSite: "lax"
     });
 
-
     return res.status(200).json({success: true, 
       message: `Login successful`, 
-      user:safeUser, 
-      token})
+      user:safeUser})
   }catch(err){
       console.log("error found in db");
       return res.status(500).json({ success: false, 
@@ -171,33 +194,48 @@ export const registerController = async (req:Request, res:Response) => {
  
 }
 
-
-// --- Logout controller
 export const logoutController = async (req: Request, res: Response) => {
- 
   try {
     await connectRedisOnce();
 
-    const token = req.cookies?.token;
+    const refreshToken = req.cookies?.R_Token;
 
-    if (token) {
+    if (refreshToken) {
       try {
-        const decoded = jwt.decode(token) as { email?: string };
-        if (decoded?.email) {
-          await redisClient.del(`user:${decoded.email}`);
-        }
-      } catch {}
+        const decoded = jwt.verify(
+          refreshToken,
+          refreshTokenSecret
+        ) as unknown as { sub: number; tid: string };
+
+        // delete this specific refresh token
+        console.log("Decoded token:", decoded); // <-- log decoded JWT payload
+
+        // delete this specific refresh token
+        const delCount = await redisClient.del(`refresh:${decoded.sub}:${decoded.tid}`);
+        console.log("Deleted keys count:", delCount); // <-- log how many keys were actually deleted
+      } catch (err) {
+        console.log("Error decoding token:", err); // <-- log verification errors
+      }
     }
 
-    res.clearCookie("token", {
-      httpOnly: true,
+    // clear cookies
+    res.clearCookie("A_Token", {
+      httpOnly: false,
       secure: false,
       sameSite: "lax",
       path: "/",
     });
 
+    res.clearCookie("R_Token", {
+      httpOnly: false,
+      secure: false,
+      sameSite: "lax",
+      path: "/",
+    });
+ 
     return res.status(200).json({ success: true });
   } catch (err) {
+    console.log("Logout error:", err);
     return res.status(500).json({ success: false });
   }
 };
@@ -218,11 +256,49 @@ export const loggedInUserController = async (req: Request, res: Response) => {
 
   return res.status(200).json({
     success: true,
-    user, // send back user info (no password!)
+    user, 
   });
 };
 
+export const refreshController = async (req: Request, res: Response) => {
+  try {
+    await connectRedisOnce();
 
+    const refreshToken = req.cookies?.R_Token;
+    if (!refreshToken) {
+      return res.status(401).json({ success: false, message: "No refresh token provided" });
+    }
+
+    let decoded: { sub: number; tid: string };
+    try {
+      decoded = jwt.verify(refreshToken, refreshTokenSecret) as unknown as { sub: number; tid: string };
+    } catch (err) {
+      return res.status(401).json({ success: false, message: "Invalid or expired refresh token" });
+    }
+
+    // Check if the refresh token exists in Redis
+    const key = `refresh:${decoded.sub}:${decoded.tid}`;
+    const exists = await redisClient.get(key);
+    if (!exists) {
+      return res.status(401).json({ success: false, message: "Refresh token revoked" });
+    }
+
+    // Create a new access token
+    const accessToken = createToken({ id: decoded.sub });
+
+    res.cookie("A_Token", accessToken, {
+      httpOnly: false,
+      secure: false,
+      sameSite: "lax"
+    });
+
+    return res.status(200).json({ success: true, token: accessToken });
+
+  } catch (err) {
+    console.error("Refresh token error:", err);
+    return res.status(500).json({ success: false, message: "Something went wrong" });
+  }
+};
 
 
 
@@ -259,12 +335,58 @@ export const getAllUsers = async (_req:Request, res:Response)=>{
   return res.status(200).json({success: true, users: rows})
 }
 
-export const makeNewToken = (req:Request, res:Response)=>{
-  const user = req.body;
-  const token = createToken(user);
-  res.json({accessToken: token})
+export const makeNewToken = async (req:Request, res:Response)=>{
+  const id = req.body.id
+  const result = await pool.query(
+    `SELECT * FROM customers WHERE id = $1`,
+    [id]
+  );
 
+  if (result.rows.length === 0) {
+    return res.status(401).json({ success: false, message: "User not found" });
+  }
+
+  const user = result.rows[0];
+  // const user = req.body;
+  const token = createToken(user.id);
+  const refreshToken = createRefreshToken(user.id);
+  return res.json({user , token, refreshToken})
 }
+
+export const makeRefreshToken = async (req: Request, res: Response) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return res.status(401).json({ success: false, message: "Missing Refresh Token" });
+  }
+
+  try {
+    const decoded = jwt.verify(
+      refreshToken,
+      refreshTokenSecret
+    ) as jwt.JwtPayload;
+
+    const result = await pool.query(
+      `SELECT * FROM customers WHERE id = $1`,
+      [decoded.id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({ success: false, message: "User not found" });
+    }
+
+    const user = result.rows[0];
+    const token = createToken(user);
+
+    return res.json({ token });
+
+  } catch (err) {
+    return res.status(401).json({
+      success: false,
+      message: "Invalid refresh token",
+    });
+  }
+};
 export const jwtTest = (req:Request, res:Response)=>{
   const user = (req as any).user;
   res.json({ message: 'Token verified!', user });

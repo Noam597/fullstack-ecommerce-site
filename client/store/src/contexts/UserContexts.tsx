@@ -17,6 +17,18 @@ export const UserProvider: React.FC<{children : React.ReactNode}> = ({children})
     const [loadingUser, setLoadingUser] = useState<boolean>(true);
     const dispatch = useDispatch<AppDispatch>()
 
+    const refreshAccessToken = async () => {
+      try {
+        await api.post("/users/auth/refresh"); // backend sets new A_Token cookie
+        console.log("Access token refreshed");
+      } catch (err) {
+        console.error("Refresh failed:", err);
+        setUser(null); // optional: log user out if refresh fails
+      }
+    };
+    
+    
+
   const checkSession = async ()=>{
     try{
       const res = await api.get(`/users/getMe`, {
@@ -38,6 +50,30 @@ export const UserProvider: React.FC<{children : React.ReactNode}> = ({children})
     checkSession()
     
   }, [])
+  
+  useEffect(() => {
+    // set up response interceptor
+    const interceptor = api.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const originalRequest = error.config;
+  
+        // only retry once
+        if (error.response?.status === 401 && !originalRequest._retry) {
+          originalRequest._retry = true;
+          await refreshAccessToken(); // call your refresh endpoint
+          return api(originalRequest); // retry original request
+        }
+  
+        return Promise.reject(error);
+      }
+    );
+  
+    // cleanup interceptor when context unmounts
+    return () => {
+      api.interceptors.response.eject(interceptor);
+    };
+  }, []);
   
 
   return (

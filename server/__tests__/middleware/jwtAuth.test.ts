@@ -29,19 +29,18 @@ describe("testing JSON web token",()=>{
                     password:"johnsmith123"
                 }
 
-                const userPayload = {
-                    id: 1,
-                    name:"John",
-                    surname: "Smith",
-                    role:"admin",
-                    email:"john.smith@mail.com"
-                }
 
                 mockedJwt.sign.mockReturnValue("json.test.token" as any);
 
                 const token = createToken(mockUser as any);
                 expect(mockedJwt.sign).toHaveBeenCalledTimes(1)
-                expect(mockedJwt.sign).toHaveBeenCalledWith(userPayload,'token_secret');
+                // expect(mockedJwt.sign).toHaveBeenCalledWith(userPayload,'token_secret');
+                expect(mockedJwt.sign).toHaveBeenCalledWith(
+                    { id: 1 },
+                    'token_secret',
+                    { expiresIn: '15m' }
+                  );
+                  
                 expect(token).toBe("json.test.token");
 
 
@@ -87,7 +86,7 @@ describe("testing JSON web token",()=>{
                 // expect.any(Function)
             );
 
-            expect(res.status).toHaveBeenCalledWith(403);
+            expect(res.status).toHaveBeenCalledWith(401);
             expect(res.json).toHaveBeenCalledWith({ success: false, message: "User is Not Authorized"});
             expect(next).not.toHaveBeenCalled();
         })

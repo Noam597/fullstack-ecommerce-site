@@ -33,11 +33,13 @@ jest.mock('bcrypt', () => ({
 // ---- Logout controller dependencies ----
 jest.mock('jsonwebtoken', () => ({
   decode: jest.fn(),
+  verify: jest.fn()
 }));
 
 
 
 import jwt from 'jsonwebtoken';
+import { refreshTokenSecret } from '../../middleware/jwtAuth.js';
 
 const mockResponse = (): Response => {
   return {
@@ -238,7 +240,7 @@ describe('logoutController (unit)', () => {
   });
 
   it('should clear cookie, delete redis session, and return 200', async () => {
-    const req = mockRequest({token: 'valid.token'}) 
+    const req = mockRequest({R_Token: 'valid.token'}) 
 
     const res = {
       clearCookie: jest.fn(),
@@ -246,26 +248,25 @@ describe('logoutController (unit)', () => {
       json: jest.fn(),
     } as unknown as Response;
 
-    (jwt.decode as jest.Mock).mockReturnValue({
-      email: 'john@example.com',
+    (jwt.verify as jest.Mock).mockReturnValue({
+      sub:1,
+      tid:"token-id-123"
     });
 
     await logoutController(req, res);
 
     expect(mockedConnectRedisOnce).toHaveBeenCalledTimes(1);
 
-    expect(jwt.decode).toHaveBeenCalledWith('valid.token');
+    expect(jwt.verify).toHaveBeenCalledWith('valid.token',refreshTokenSecret);
 
     expect(mockedRedisClientDel).toHaveBeenCalledWith(
-      'user:john@example.com'
+      // 'user:john@example.com'
+      "refresh:1:token-id-123"
     );
 
-    expect(res.clearCookie).toHaveBeenCalledWith('token', {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      path: '/',
-    });
+
+    expect(res.clearCookie).toHaveBeenCalledWith('A_Token', expect.any(Object));
+    expect(res.clearCookie).toHaveBeenCalledWith('R_Token',expect.any(Object));
 
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({ success: true });
@@ -292,6 +293,62 @@ describe('logoutController (unit)', () => {
     mockedConnectRedisOnce.mockRejectedValueOnce(
       new Error('Redis down')
     );
+    await logoutController(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ success: false });
+  });
+});
+describe("logoutController (unit)", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockedConnectRedisOnce.mockResolvedValue(undefined);
+    mockedRedisClientDel.mockResolvedValue(1);
+  });
+
+  it("should delete refresh token, clear cookies, and return 200", async () => {
+    const req = mockRequest({
+      R_Token: "valid.refresh.token",
+    });
+    const res = mockResponse();
+
+    (jwt.verify as jest.Mock).mockReturnValue({
+      sub: 1,
+      tid: "token-id-123",
+    });
+
+    await logoutController(req, res);
+
+    expect(mockedConnectRedisOnce).toHaveBeenCalledTimes(1);
+    expect(jwt.verify).toHaveBeenCalledWith(
+      "valid.refresh.token",
+      refreshTokenSecret
+    );
+    expect(mockedRedisClientDel).toHaveBeenCalledWith("refresh:1:token-id-123");
+    expect(res.clearCookie).toHaveBeenCalledWith("A_Token", expect.any(Object));
+    expect(res.clearCookie).toHaveBeenCalledWith("R_Token", expect.any(Object));
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({ success: true });
+  });
+
+  it("should still succeed if no refresh token is present", async () => {
+    const req = mockRequest();
+    const res = mockResponse();
+
+    await logoutController(req, res);
+
+    expect(jwt.verify).not.toHaveBeenCalled();
+    expect(mockedRedisClientDel).not.toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({ success: true });
+  });
+
+  it("should return 500 if redis connection fails", async () => {
+    const req = mockRequest({ R_Token: "valid.refresh.token" });
+    const res = mockResponse();
+
+    mockedConnectRedisOnce.mockRejectedValueOnce(new Error("Redis down"));
+
     await logoutController(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);

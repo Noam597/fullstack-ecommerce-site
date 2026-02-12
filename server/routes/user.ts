@@ -9,6 +9,8 @@ import {signupController,
             testRedis,
             logoutController,
             loggedInUserController,
+            makeRefreshToken,
+            refreshController,
             // seedUsersController,
             
         } from '../controller/user.js';
@@ -25,15 +27,16 @@ signUpRouter.post('/logout', logoutController)
 
 //checks if the users token is in the cookie
 signUpRouter.get('/getMe', authToken, loggedInUserController)
-
+signUpRouter.post("/auth/refresh", refreshController)
 signUpRouter.post('/addUser', addUser);
 signUpRouter.get('/getallusers', getAllUsers)
 //token tester routes
 signUpRouter.post('/token', makeNewToken)
+signUpRouter.post('/refresh_token', makeRefreshToken)
 signUpRouter.post('/authToken', authToken, jwtTest)
 
 signUpRouter.get("/test-redis", testRedis);
 
 // signUpRouter.post("/seed-users", seedUsersController);
  
-export {signUpRouter};
+export {signUpRouter};  
