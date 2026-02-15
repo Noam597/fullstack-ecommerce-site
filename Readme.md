@@ -1,54 +1,104 @@
 Fullstack E-Commerce Web Application
 
-A modern full-stack e-commerce application built with React, TypeScript, Node.js, Express, PostgreSQL, and Redis.
+A production-style full-stack e-commerce application built with React, TypeScript, Node.js, Express, PostgreSQL, and Redis.
 
-This project is fully Dockerized. Using Docker Compose, the frontend, backend, PostgreSQL, and Redis all run together and can be started with a single command, mirroring a real-world development setup.
+The entire system is fully Dockerized using Docker Compose. The frontend, backend, PostgreSQL, and Redis run together with a single command, mirroring a real-world multi-service architecture.
 
 🚀 Features
-Authentication & Authorization
+🔐 Authentication & Authorization
+Dual-Token JWT Authentication
 
-User signup, login, and logout
+The application implements a secure access + refresh token strategy:
 
-JWT-based authentication
+Access Token
 
-Secure password hashing
+JWT
 
-Role-based access (admin vs user)
+15-minute expiration
 
-E-Commerce Functionality
+Stored in HttpOnly cookie
 
-Product browsing and management
+Used to authenticate API requests
 
-Shopping cart and checkout flow
+Refresh Token
 
-Order tracking and payment status
+Long-lived
 
-Admin Panel
+Stored in HttpOnly cookie
+
+Backed by Redis session store
+
+Used to generate new access tokens when expired
+
+Invalidated on logout
+
+Session Management (Redis-backed)
+
+Each refresh token is associated with a unique UUID stored in Redis:
+
+Enables server-side session revocation
+
+Prevents reuse of invalidated refresh tokens
+
+Allows secure logout across sessions
+
+On logout:
+
+Refresh token entry is deleted from Redis
+
+Both access and refresh cookies are cleared
+
+Role-Based Access Control
+
+Admin and User roles
+
+Middleware-protected routes
+
+Admin-only access for product and user management
+
+🛒 E-Commerce Functionality
+
+Product browsing
+
+Shopping cart management
+
+Checkout flow
+
+Order tracking
+
+Payment status handling
+
+🛠 Admin Panel
 
 CRUD operations for users and products
 
 Revenue and profit overview
 
-Admin-only protected routes
+Protected admin routes
 
-Backend & Infrastructure
+🧠 Backend & Infrastructure
 
 REST API built with Express and TypeScript
 
-PostgreSQL database
+PostgreSQL relational database
 
-Redis caching for performance optimization
+Redis used for:
+
+Refresh token session storage
+
+Performance optimization and caching
 
 Swagger API documentation
 
-Testing
+🧪 Testing
 
 Frontend testing with Vitest
 
 Backend unit and integration testing with Jest
 
-🧱 Tech Stack
+Auth flow and protected route testing included
 
+🧱 Tech Stack
 Frontend
 
 React
@@ -69,7 +119,7 @@ Express
 
 TypeScript
 
-JWT Authentication
+JWT (Access + Refresh Token Strategy)
 
 Database & Caching
 
@@ -77,7 +127,7 @@ PostgreSQL
 
 Redis
 
-DevOps
+DevOps & Tooling
 
 Docker
 
@@ -87,13 +137,13 @@ Swagger
 
 🐳 Dockerized Architecture
 
-The entire application is containerized using Docker and orchestrated with Docker Compose.
+The entire application is containerized and orchestrated with Docker Compose.
 
 Services
 
 Frontend (React)
 
-Backend (Node.js / Express)
+Backend (Node.js / Express API)
 
 PostgreSQL
 
@@ -110,24 +160,22 @@ Docker Compose
 
 🚀 Quick Start (Recommended)
 
-Start the entire application with one command:
+Start the entire application:
 
 docker-compose up --build
 
 
-This will start:
+Services will run at:
 
-Frontend at http://localhost:5173
+Frontend → http://localhost:5173
 
-Backend API at http://localhost:5000
+Backend API → http://localhost:5000
 
-Swagger API docs at http://localhost:5000/api-docs
-
-PostgreSQL and Redis containers
+Swagger Docs → http://localhost:5000/api-docs
 
 🔧 Manual Development (Optional)
 
-If you prefer to run services without Docker:
+If running without Docker:
 
 Backend
 cd server
@@ -140,12 +188,13 @@ npm install
 npm run dev
 
 
-Note: Manual mode still requires PostgreSQL and Redis to be running.
+Note: PostgreSQL and Redis must be running locally.
 
 🔐 Environment Variables
 
 Environment variables are managed via Docker Compose.
-If running manually, create .env files as needed.
+
+If running manually, create .env files.
 
 Backend
 DATABASE_URL=postgres://user:password@postgres:5432/dbname
@@ -159,11 +208,13 @@ VITE_API_URL=http://localhost:5000
 
 Build a production-style full-stack application
 
-Practice authentication, authorization, and role management
+Implement secure authentication with refresh token rotation
 
-Work with relational databases and caching
+Practice role-based authorization
 
-Learn Docker-based development workflows
+Work with relational databases and caching systems
+
+Learn containerized development workflows
 
 Write maintainable, testable code
 
